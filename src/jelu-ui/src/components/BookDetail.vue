@@ -21,6 +21,8 @@ import AutoImportFormModalVue from "./AutoImportFormModal.vue"
 import BookQuoteCard from "./BookQuoteCard.vue"
 import BookQuoteModalVue from './BookQuoteModal.vue'
 import EditBookModal from "./EditBookModal.vue"
+import LendModal from './LendModal.vue'
+import LoanHistory from './LoanHistory.vue'
 import MergeBookModal from './MergeBookModal.vue'
 import ReadingEventModalVue from './ReadingEventModal.vue'
 import ReadProgressModal from './ReadProgressModal.vue'
@@ -60,6 +62,7 @@ if (currency == null) {
 const book: Ref<UserBook | null> = ref(null)
 const edit: Ref<boolean> = ref(false)
 const showModal: Ref<boolean> = ref(false)
+const showLendModal = ref(false)
 
 const getBookIsLoading: Ref<boolean> = ref(false)
 
@@ -606,13 +609,22 @@ getBook()
           <span>{{ t('labels.delete') }}</span>
         </button>
         <button
-          class="btn btn-info btn-outline p-2 uppercase"
+          class="btn btn-info btn-outline mr-2 p-2 uppercase"
           @click="toggleReadingEventModal(defaultCreateEvent(), false)"
         >
           <span class="icon">
             <i class="mdi mdi-plus mdi-18px" />
           </span>
           <span>{{ t('labels.event') }}</span>
+        </button>
+        <button
+          class="btn btn-warning btn-outline mr-2 p-2 uppercase"
+          @click="showLendModal = true"
+        >
+          <span class="icon">
+            <i class="mdi mdi-book-arrow-right mdi-18px" />
+          </span>
+          <span>Lend</span>
         </button>
         <label
           v-tooltip="t('labels.get_embed_code')"
@@ -1241,7 +1253,19 @@ getBook()
               </router-link>
         </p>
     </div>
+    <LoanHistory
+      v-if="book?.id"
+      :user-book-id="book.id"
+    />
   </div>
+  <LendModal
+    v-if="book?.id"
+    v-model:open="showLendModal"
+    :user-book-id="book.id"
+    :book-title="book.book.title ?? ''"
+    @loaned="getBook"
+    @returned="getBook"
+  />
   <o-loading
     v-model:active="getBookIsLoading"
     :full-page="true"

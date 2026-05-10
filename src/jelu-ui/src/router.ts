@@ -132,6 +132,12 @@ const router = createRouter({
             name: 'list-detail'
         },
         {
+            path: '/lending',
+            component: () => import(/* webpackChunkName: "recommend" */ './components/LendingDashboard.vue'),
+            name: 'lending',
+            beforeEnter: [isLogged],
+        },
+        {
             path: '/profile',
             component: AdminBaseVue,
             name: 'profile-page',
