@@ -707,4 +707,62 @@
             <column name="user_id" />
         </createIndex>
     </changeSet>
+    <changeSet id="create_borrower" author="claude">
+        <createTable tableName="borrower">
+            <column name="id" type="binary(16)" remarks="Technical ID">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="creation_date" type="timestamp" remarks="date of creation">
+                <constraints nullable="false" />
+            </column>
+            <column name="modification_date" type="timestamp" remarks="date of modification">
+                <constraints nullable="false" />
+            </column>
+            <column name="name" type="varchar(500)" remarks="Borrower display name">
+                <constraints nullable="false" />
+            </column>
+            <column name="email" type="varchar(500)" remarks="Optional contact email">
+            </column>
+            <column name="phone" type="varchar(100)" remarks="Optional contact phone">
+            </column>
+        </createTable>
+        <createIndex tableName="borrower" indexName="idx_borrower_name">
+            <column name="name" />
+        </createIndex>
+    </changeSet>
+    <changeSet id="create_loan" author="claude">
+        <createTable tableName="loan">
+            <column name="id" type="binary(16)" remarks="Technical ID">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="creation_date" type="timestamp" remarks="date of creation">
+                <constraints nullable="false" />
+            </column>
+            <column name="modification_date" type="timestamp" remarks="date of modification">
+                <constraints nullable="false" />
+            </column>
+            <column name="user_book_id" type="binary(16)" remarks="FK to user_book">
+                <constraints foreignKeyName="fk_loan_user_book_id" references="user_book(id)" nullable="false" deleteCascade="true" />
+            </column>
+            <column name="borrower_id" type="binary(16)" remarks="FK to borrower">
+                <constraints foreignKeyName="fk_loan_borrower_id" references="borrower(id)" nullable="false" deleteCascade="true" />
+            </column>
+            <column name="loan_date" type="timestamp" remarks="Date the book was lent out">
+                <constraints nullable="false" />
+            </column>
+            <column name="due_date" type="timestamp" remarks="Optional expected return date">
+            </column>
+            <column name="returned_date" type="timestamp" remarks="Date the book was returned; null means still on loan">
+            </column>
+        </createTable>
+        <createIndex tableName="loan" indexName="idx_loan_user_book_id">
+            <column name="user_book_id" />
+        </createIndex>
+        <createIndex tableName="loan" indexName="idx_loan_borrower_id">
+            <column name="borrower_id" />
+        </createIndex>
+        <createIndex tableName="loan" indexName="idx_loan_returned_date">
+            <column name="returned_date" />
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

@@ -18,7 +18,7 @@ const isAdmin = () => {
 }
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHistory(import.meta.env.BASE_URL),
     linkActiveClass: 'is-active',
     linkExactActiveClass: 'is-active',
     routes: [
@@ -130,6 +130,12 @@ const router = createRouter({
             path: '/custom-lists/:listId',
             component: () => import(/* webpackChunkName: "recommend" */ './components/CustomListDetail.vue'),
             name: 'list-detail'
+        },
+        {
+            path: '/lending',
+            component: () => import(/* webpackChunkName: "recommend" */ './components/LendingDashboard.vue'),
+            name: 'lending',
+            beforeEnter: [isLogged],
         },
         {
             path: '/profile',
