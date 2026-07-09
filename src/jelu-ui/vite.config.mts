@@ -9,7 +9,9 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   // publicDir: "assets",
 
-  // base : 'http://localhost:11111/',
+  // Serve the app under a sub-path (e.g. "/books/") by setting PUBLIC_URL at build time.
+  // Must match the backend's server.servlet.context-path at runtime.
+  base: process.env.PUBLIC_URL || '/',
   plugins: [
     vue(),
     VueI18nPlugin({

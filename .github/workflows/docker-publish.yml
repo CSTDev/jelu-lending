@@ -15,6 +15,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: |
+            17
+            21
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Build application (jar unpacked for Docker layering)
+        # PUBLIC_URL bakes the frontend base path into the image; must match
+        # the SERVER_SERVLET_CONTEXT_PATH the container is run with.
+        env:
+          PUBLIC_URL: /books/
+        run: |
+          ./gradlew copyWebDist
+          ./gradlew unpack
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 

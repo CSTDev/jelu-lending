@@ -14,7 +14,10 @@ class Urls {
         }
         else {
             this.MODE = "prod"
-            this.BASE_URL = window.location.origin.endsWith("/") ? window.location.origin.slice(0, -1) : window.location.origin
+            const origin = window.location.origin.endsWith("/") ? window.location.origin.slice(0, -1) : window.location.origin
+            // BASE_URL is "/" by default, or the sub-path (e.g. "/books/") when built with PUBLIC_URL
+            const basePath = import.meta.env.BASE_URL.replace(/\/$/, "")
+            this.BASE_URL = origin + basePath
             this.API_URL = this.BASE_URL + "/api/v1"
         }
         console.log(`running in ${this.MODE} mode at ${this.BASE_URL} and ${this.API_URL}`)

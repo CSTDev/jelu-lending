@@ -21,55 +21,67 @@ import java.util.UUID
 
 @RestController
 @RequestMapping("/api/v1")
-class LendingController(private val lendingService: LendingService) {
-
+class LendingController(
+    private val lendingService: LendingService,
+) {
     @PostMapping("/borrowers")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createBorrower(@RequestBody dto: CreateBorrowerDto): BorrowerDto =
-        lendingService.createBorrower(dto)
+    fun createBorrower(
+        @RequestBody dto: CreateBorrowerDto,
+    ): BorrowerDto = lendingService.createBorrower(dto)
 
     @GetMapping("/borrowers/{id}")
-    fun getBorrower(@PathVariable id: UUID): BorrowerDto =
-        lendingService.getBorrower(id)
+    fun getBorrower(
+        @PathVariable id: UUID,
+    ): BorrowerDto = lendingService.getBorrower(id)
 
     @GetMapping("/borrowers")
-    fun listBorrowers(@RequestParam(required = false) name: String?): List<BorrowerDto> =
-        lendingService.listBorrowers(name)
+    fun listBorrowers(
+        @RequestParam(required = false) name: String?,
+    ): List<BorrowerDto> = lendingService.listBorrowers(name)
 
     @PutMapping("/borrowers/{id}")
-    fun updateBorrower(@PathVariable id: UUID, @RequestBody dto: UpdateBorrowerDto): BorrowerDto =
-        lendingService.updateBorrower(id, dto)
+    fun updateBorrower(
+        @PathVariable id: UUID,
+        @RequestBody dto: UpdateBorrowerDto,
+    ): BorrowerDto = lendingService.updateBorrower(id, dto)
 
     @DeleteMapping("/borrowers/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteBorrower(@PathVariable id: UUID) =
-        lendingService.deleteBorrower(id)
+    fun deleteBorrower(
+        @PathVariable id: UUID,
+    ) = lendingService.deleteBorrower(id)
 
     @PostMapping("/loans")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createLoan(@RequestBody dto: CreateLoanDto): LoanDto =
-        lendingService.createLoan(dto)
+    fun createLoan(
+        @RequestBody dto: CreateLoanDto,
+    ): LoanDto = lendingService.createLoan(dto)
 
     @GetMapping("/loans/{id}")
-    fun getLoan(@PathVariable id: UUID): LoanDto =
-        lendingService.getLoan(id)
+    fun getLoan(
+        @PathVariable id: UUID,
+    ): LoanDto = lendingService.getLoan(id)
 
     @GetMapping("/loans")
     fun listLoans(
         @RequestParam(required = false) userBookId: UUID?,
         @RequestParam(required = false) borrowerId: UUID?,
-    ): List<LoanDto> = when {
-        userBookId != null -> lendingService.listLoansByUserBook(userBookId)
-        borrowerId != null -> lendingService.listLoansByBorrower(borrowerId)
-        else -> lendingService.listOpenLoans()
-    }
+    ): List<LoanDto> =
+        when {
+            userBookId != null -> lendingService.listLoansByUserBook(userBookId)
+            borrowerId != null -> lendingService.listLoansByBorrower(borrowerId)
+            else -> lendingService.listOpenLoans()
+        }
 
     @PostMapping("/loans/{id}/return")
-    fun returnLoan(@PathVariable id: UUID): LoanDto =
-        lendingService.returnLoan(id)
+    fun returnLoan(
+        @PathVariable id: UUID,
+    ): LoanDto = lendingService.returnLoan(id)
 
     @DeleteMapping("/loans/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteLoan(@PathVariable id: UUID) =
-        lendingService.deleteLoan(id)
+    fun deleteLoan(
+        @PathVariable id: UUID,
+    ) = lendingService.deleteLoan(id)
 }

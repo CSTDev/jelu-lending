@@ -15,7 +15,9 @@ object BorrowerTable : UUIDTable("borrower") {
     val phone = varchar("phone", 100).nullable()
 }
 
-class Borrower(id: EntityID<UUID>) : UUIDEntity(id) {
+class Borrower(
+    id: EntityID<UUID>,
+) : UUIDEntity(id) {
     companion object : UUIDEntityClass<Borrower>(BorrowerTable)
 
     var creationDate by BorrowerTable.creationDate

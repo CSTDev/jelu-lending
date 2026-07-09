@@ -4,12 +4,12 @@ import io.github.bayang.jelu.dto.BorrowerDto
 import io.github.bayang.jelu.dto.CreateBorrowerDto
 import io.github.bayang.jelu.dto.UpdateBorrowerDto
 import io.github.bayang.jelu.utils.nowInstant
+import org.jetbrains.exposed.sql.and
 import org.springframework.stereotype.Repository
 import java.util.UUID
 
 @Repository
 class BorrowerRepository {
-
     fun save(dto: CreateBorrowerDto): Borrower {
         val now = nowInstant()
         return Borrower.new {
@@ -30,7 +30,10 @@ class BorrowerRepository {
             Borrower.find { BorrowerTable.name like "%$nameFilter%" }.toList()
         }
 
-    fun update(entity: Borrower, dto: UpdateBorrowerDto): Borrower {
+    fun update(
+        entity: Borrower,
+        dto: UpdateBorrowerDto,
+    ): Borrower {
         dto.name?.let { entity.name = it }
         dto.email?.let { entity.email = it }
         dto.phone?.let { entity.phone = it }
@@ -43,12 +46,13 @@ class BorrowerRepository {
     fun hasOpenLoans(borrowerId: UUID): Boolean =
         Loan.find { (LoanTable.borrower eq borrowerId) and LoanTable.returnedDate.isNull() }.count() > 0
 
-    fun toBorrowerDto(entity: Borrower) = BorrowerDto(
-        id = entity.id.value,
-        creationDate = entity.creationDate,
-        modificationDate = entity.modificationDate,
-        name = entity.name,
-        email = entity.email,
-        phone = entity.phone,
-    )
+    fun toBorrowerDto(entity: Borrower) =
+        BorrowerDto(
+            id = entity.id.value,
+            creationDate = entity.creationDate,
+            modificationDate = entity.modificationDate,
+            name = entity.name,
+            email = entity.email,
+            phone = entity.phone,
+        )
 }

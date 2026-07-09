@@ -19,31 +19,34 @@ class LendingService(
     private val borrowerRepository: BorrowerRepository,
     private val loanRepository: LoanRepository,
 ) {
+    @Transactional
+    fun createBorrower(dto: CreateBorrowerDto): BorrowerDto = borrowerRepository.toBorrowerDto(borrowerRepository.save(dto))
 
     @Transactional
-    fun createBorrower(dto: CreateBorrowerDto): BorrowerDto =
-        borrowerRepository.toBorrowerDto(borrowerRepository.save(dto))
-
-    @Transactional(readOnly = true)
     fun getBorrower(id: UUID): BorrowerDto =
         borrowerRepository.findById(id)?.let { borrowerRepository.toBorrowerDto(it) }
             ?: throw JeluNotFoundException("Borrower $id not found")
 
-    @Transactional(readOnly = true)
+    @Transactional
     fun listBorrowers(nameFilter: String? = null): List<BorrowerDto> =
         borrowerRepository.findAll(nameFilter).map { borrowerRepository.toBorrowerDto(it) }
 
     @Transactional
-    fun updateBorrower(id: UUID, dto: UpdateBorrowerDto): BorrowerDto {
-        val entity = borrowerRepository.findById(id)
-            ?: throw JeluNotFoundException("Borrower $id not found")
+    fun updateBorrower(
+        id: UUID,
+        dto: UpdateBorrowerDto,
+    ): BorrowerDto {
+        val entity =
+            borrowerRepository.findById(id)
+                ?: throw JeluNotFoundException("Borrower $id not found")
         return borrowerRepository.toBorrowerDto(borrowerRepository.update(entity, dto))
     }
 
     @Transactional
     fun deleteBorrower(id: UUID) {
-        val entity = borrowerRepository.findById(id)
-            ?: throw JeluNotFoundException("Borrower $id not found")
+        val entity =
+            borrowerRepository.findById(id)
+                ?: throw JeluNotFoundException("Borrower $id not found")
         if (borrowerRepository.hasOpenLoans(id)) {
             throw JeluValidationException("Cannot delete borrower with open loans")
         }
@@ -52,37 +55,39 @@ class LendingService(
 
     @Transactional
     fun createLoan(dto: CreateLoanDto): LoanDto {
-        val userBook = UserBook.findById(dto.userBookId)
-            ?: throw JeluNotFoundException("UserBook ${dto.userBookId} not found")
-        val borrower = borrowerRepository.findById(dto.borrowerId)
-            ?: throw JeluNotFoundException("Borrower ${dto.borrowerId} not found")
+        val userBook =
+            UserBook.findById(dto.userBookId)
+                ?: throw JeluNotFoundException("UserBook ${dto.userBookId} not found")
+        val borrower =
+            borrowerRepository.findById(dto.borrowerId)
+                ?: throw JeluNotFoundException("Borrower ${dto.borrowerId} not found")
         if (loanRepository.hasOpenLoan(dto.userBookId)) {
             throw JeluValidationException("Book already has an open loan")
         }
         return loanRepository.toLoanDto(loanRepository.save(dto, userBook, borrower))
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     fun getLoan(id: UUID): LoanDto =
         loanRepository.findById(id)?.let { loanRepository.toLoanDto(it) }
             ?: throw JeluNotFoundException("Loan $id not found")
 
-    @Transactional(readOnly = true)
-    fun listOpenLoans(): List<LoanDto> =
-        loanRepository.findOpen().map { loanRepository.toLoanDto(it) }
+    @Transactional
+    fun listOpenLoans(): List<LoanDto> = loanRepository.findOpen().map { loanRepository.toLoanDto(it) }
 
-    @Transactional(readOnly = true)
+    @Transactional
     fun listLoansByUserBook(userBookId: UUID): List<LoanDto> =
         loanRepository.findByUserBook(userBookId).map { loanRepository.toLoanDto(it) }
 
-    @Transactional(readOnly = true)
+    @Transactional
     fun listLoansByBorrower(borrowerId: UUID): List<LoanDto> =
         loanRepository.findByBorrower(borrowerId).map { loanRepository.toLoanDto(it) }
 
     @Transactional
     fun returnLoan(id: UUID): LoanDto {
-        val entity = loanRepository.findById(id)
-            ?: throw JeluNotFoundException("Loan $id not found")
+        val entity =
+            loanRepository.findById(id)
+                ?: throw JeluNotFoundException("Loan $id not found")
         if (entity.returnedDate != null) {
             throw JeluValidationException("Loan $id has already been returned")
         }
@@ -91,8 +96,9 @@ class LendingService(
 
     @Transactional
     fun deleteLoan(id: UUID) {
-        val entity = loanRepository.findById(id)
-            ?: throw JeluNotFoundException("Loan $id not found")
+        val entity =
+            loanRepository.findById(id)
+                ?: throw JeluNotFoundException("Loan $id not found")
         loanRepository.delete(entity)
     }
 }

@@ -18,7 +18,9 @@ object LoanTable : UUIDTable("loan") {
     val returnedDate = timestamp("returned_date").nullable()
 }
 
-class Loan(id: EntityID<UUID>) : UUIDEntity(id) {
+class Loan(
+    id: EntityID<UUID>,
+) : UUIDEntity(id) {
     companion object : UUIDEntityClass<Loan>(LoanTable)
 
     var creationDate by LoanTable.creationDate

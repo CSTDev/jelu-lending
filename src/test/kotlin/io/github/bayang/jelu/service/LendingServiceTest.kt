@@ -30,7 +30,6 @@ class LendingServiceTest(
     @Autowired private val bookService: BookService,
     @Autowired private val userService: UserService,
 ) {
-
     @BeforeAll
     fun setup() {
         userService.save(CreateUserDto(login = "lendtest", password = "1234", isAdmin = true))
@@ -45,12 +44,16 @@ class LendingServiceTest(
             lendingService.listBorrowers().forEach { runCatching { lendingService.deleteBorrower(it.id) } }
         }
         runCatching {
-            val userId = (userService.loadUserByUsername("lendtest") as? JeluUser)?.user?.id
-                ?: return@runCatching
-            bookService.findUserBookByCriteria(userId, null, null, null, null, null, Pageable.ofSize(50))
+            val userId =
+                (userService.loadUserByUsername("lendtest") as? JeluUser)?.user?.id
+                    ?: return@runCatching
+            bookService
+                .findUserBookByCriteria(userId, null, null, null, null, null, Pageable.ofSize(50))
                 .forEach { runCatching { bookService.deleteUserBookById(it.id!!) } }
         }
-        userService.findAll(null).filter { it.login == "lendtest" }
+        userService
+            .findAll(null)
+            .filter { it.login == "lendtest" }
             .forEach { runCatching { userService.deleteUser(it.id!!) } }
     }
 
@@ -115,9 +118,10 @@ class LendingServiceTest(
     fun testCannotReturnAlreadyReturnedLoan() {
         val borrower = lendingService.createBorrower(CreateBorrowerDto(name = "Eve"))
         val userBookDto = bookService.save(createUserBookDto(bookDto("Return Test Book")), user(), null)
-        val loan = lendingService.createLoan(
-            CreateLoanDto(userBookId = userBookDto.id!!, borrowerId = borrower.id),
-        )
+        val loan =
+            lendingService.createLoan(
+                CreateLoanDto(userBookId = userBookDto.id!!, borrowerId = borrower.id),
+            )
         lendingService.returnLoan(loan.id)
         assertThrows<JeluValidationException> { lendingService.returnLoan(loan.id) }
     }

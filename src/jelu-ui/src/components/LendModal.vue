@@ -68,7 +68,7 @@ async function lendBook() {
     await lendingService.createLoan({
       userBookId: props.userBookId,
       borrowerId: borrower.id,
-      dueDate: dueDate.value || null,
+      dueDate: dueDate.value ? new Date(dueDate.value).toISOString() : null,
     })
     close()
     emit('loaned')
