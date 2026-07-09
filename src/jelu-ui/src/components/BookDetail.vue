@@ -63,6 +63,12 @@ const book: Ref<UserBook | null> = ref(null)
 const edit: Ref<boolean> = ref(false)
 const showModal: Ref<boolean> = ref(false)
 const showLendModal = ref(false)
+// bump to remount LoanHistory (and re-trigger its onMounted fetch) after a lend/return
+const loanHistoryKey = ref(0)
+const onLoanChanged = () => {
+  getBook()
+  loanHistoryKey.value++
+}
 
 const getBookIsLoading: Ref<boolean> = ref(false)
 
@@ -1255,6 +1261,7 @@ getBook()
     </div>
     <LoanHistory
       v-if="book?.id"
+      :key="loanHistoryKey"
       :user-book-id="book.id"
     />
   </div>
@@ -1263,8 +1270,8 @@ getBook()
     v-model:open="showLendModal"
     :user-book-id="book.id"
     :book-title="book.book.title ?? ''"
-    @loaned="getBook"
-    @returned="getBook"
+    @loaned="onLoanChanged"
+    @returned="onLoanChanged"
   />
   <o-loading
     v-model:active="getBookIsLoading"

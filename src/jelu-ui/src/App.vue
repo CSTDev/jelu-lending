@@ -256,6 +256,15 @@ function scanModalClosed() {
             <li @click="collapseDropdown()">
               <router-link
                 v-if="isLogged"
+                :to="{ name: 'lending' }"
+                class="font-sans text-base capitalize"
+              >
+                Lending
+              </router-link>
+            </li>
+            <li @click="collapseDropdown()">
+              <router-link
+                v-if="isLogged"
                 :to="{ name: 'history' }"
                 class="font-sans text-base capitalize"
               >
@@ -419,6 +428,15 @@ function scanModalClosed() {
               class="font-sans text-xl capitalize"
             >
               {{ t('nav.add_book') }}
+            </router-link>
+          </li>
+          <li>
+            <router-link
+              v-if="isLogged"
+              :to="{ name: 'lending' }"
+              class="font-sans text-xl capitalize"
+            >
+              Lending
             </router-link>
           </li>
           <li>
